@@ -5,7 +5,7 @@
 
 ![ONDOL Demo](demo/demo_-gif.gif)
 
-[Watch or download the full video demo](demo/demo_%EC%98%A8%EB%8F%8C.mp4)
+[Watch the full video demo on YouTube](https://youtu.be/qUHExHGmuqs)
 
 ---
 
