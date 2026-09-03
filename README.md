@@ -3,6 +3,10 @@
 
 > **온돌** (Korean underfloor heating) — warms every corner of your IT operations with AI.
 
+![ONDOL Demo](demo/demo_-gif.gif)
+
+[Watch or download the full video demo](demo/demo_%EC%98%A8%EB%8F%8C.mp4)
+
 ---
 
 ## Table of Contents
