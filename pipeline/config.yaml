@@ -8,7 +8,7 @@
 pipeline:
   name: ondol
   version: "3.0.0"
-  description: "MetLife AI-First IT Ways of Working — multi-agent platform"
+  description: "AI-First IT Ways of Working — multi-agent platform"
   streaming: true          # SSE streaming of thinking steps
   checkpointing: true      # save state per session_id (SQLite)
   max_retries: 1           # max evaluator-triggered retries
@@ -77,7 +77,7 @@ agents:
     temperature: 0.2
     prompt_file: prompts/arch_review.md
     description: >
-      Drafts full ARB/RFC documents with MetLife-approved patterns,
+      Drafts full ARB/RFC documents with enterprise-approved patterns,
       risk assessment tables, compliance checklists, and next steps.
       Creates ServiceNow ARB ticket reference.
     thinking_label: "Drafting ARB document"
@@ -204,7 +204,7 @@ rbac:
     - IT Admin
     - Security Ops
 
-# ── Compliance (IFS-KR + MetLife policy) ──────────────────────
+# ── Compliance (IFS-KR + enterprise policy) ──────────────────
 compliance:
   conversation_retention_days: 365
   pii_masking: true

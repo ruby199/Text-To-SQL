@@ -110,7 +110,7 @@ def _validate_sql_structure(sql: str) -> list[str]:
 # Main evaluator
 # ──────────────────────────────────────────────────────────────
 
-EVAL_SYSTEM = """You are an expert AI output evaluator at MetLife.
+EVAL_SYSTEM = """You are an expert AI output evaluator for enterprise IT operations.
 Score the agent output on each dimension 0–100. Be strict.
 
 Return ONLY valid JSON, no markdown:

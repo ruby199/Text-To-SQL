@@ -93,7 +93,7 @@ def _call_gpt4o(system: str, user_msg: str,
 # Plan builder
 # ──────────────────────────────────────────────────────────────
 
-PLAN_SYSTEM = """You are the Supervisor Agent of ONDOL, an AI platform at MetLife.
+PLAN_SYSTEM = """You are the Supervisor Agent of ONDOL, an enterprise AI platform.
 Your job is to break down a user request into a precise execution plan.
 
 Available specialist agents:

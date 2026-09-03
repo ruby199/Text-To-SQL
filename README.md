@@ -1,5 +1,5 @@
 # ONDOL — AI-First IT Ways of Working
-## MetLife AI WOW Competition · Team ONDOL · 온돌
+## AI WOW Competition · Team ONDOL · 온돌
 
 > **온돌** (Korean underfloor heating) — warms every corner of your IT operations with AI.
 
@@ -26,13 +26,13 @@
 14. [Database Schema](#14-database-schema)
 15. [API Reference](#15-api-reference)
 16. [File Structure](#16-file-structure)
-17. [To-Be: MetIQ Integration](#17-to-be-metiq-integration)
+17. [To-Be: Enterprise Integration](#17-to-be-enterprise-integration)
 
 ---
 
 ## 1. What is ONDOL?
 
-ONDOL is an **enterprise-grade Agentic AI platform** for MetLife's IT department. It transforms how IT professionals interact with their operational data — replacing manual queries, ticket-based workflows, and dashboard hunting with a natural language AI assistant that:
+ONDOL is an **enterprise-grade Agentic AI platform** for IT departments. It transforms how IT professionals interact with their operational data — replacing manual queries, ticket-based workflows, and dashboard hunting with a natural language AI assistant that:
 
 - **Understands your IT data** like Databricks Genie — by actually reading the database schema, sampling real values, and learning your business terminology
 - **Thinks step-by-step** — every decision is streamed to your screen in real time (Supervisor → Schema Discovery → SQL Agent → Evaluator)
@@ -781,13 +781,13 @@ ondol/
 
 ---
 
-## 17. To-Be: MetIQ Integration
+## 17. To-Be: Enterprise Integration
 
 ```
 Phase 0 (Now)           Phase 1 (6-8 wks)      Phase 2 (Q2 2025)       Phase 3 (Q3 2025)
 ─────────────           ─────────────────       ─────────────────       ─────────────────
-Direct OpenAI API  →    MetIQ API gateway  →    MS AI Foundry      →    MetIQ Marketplace
-Flask standalone        MetIQ FinOps            MS Agent 365            Publish as template
+Direct OpenAI API  →    API gateway             →    AI Foundry          →    Agent marketplace
+Flask standalone        FinOps                  MS Agent platform       Publish as template
 SQLite audit log        Enterprise logging       LangGraph production     Team ONDOL agents
 Built-in BI             Grafana/Metabase MCP     Human-in-the-loop P1    Enterprise RBAC
 
@@ -803,9 +803,9 @@ Pipeline YAML           Git-ops pipeline YAML    Blue/green agents       Per-tea
 - [ ] Add `interrupt_before("security_triage")` for P1 human approval
 - [ ] Replace SQLite with PostgreSQL for multi-instance deployment
 - [ ] Add LangSmith tracing for production observability
-- [ ] Register agents in MS Agent 365 / MetIQ agent marketplace
+- [ ] Register agents in an enterprise agent marketplace
 - [ ] Connect Grafana/Metabase via MCP for external BI
 
 ---
 
-*Built by Team ONDOL for MetLife AI WOW 2024. All database records are synthetic — no real MetLife data.*
+*Built by Team ONDOL for an AI WOW competition. All database records are synthetic.*

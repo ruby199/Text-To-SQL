@@ -1,7 +1,7 @@
 """
 data/seed.py — ONDOL Rich Synthetic Dataset Generator v3
 
-완전히 현실적인 MetLife IT 운영 데이터.
+완전히 현실적인 합성 IT 운영 데이터.
 모든 PII는 합성 (SYN_ 접두사).
 
 수정 사항 (v3):
@@ -77,7 +77,7 @@ INC_TEMPLATES = [
     ("Kubernetes pod crash loop — OOMKilled",                "Application", [80,10,5,3,2],    [8,22,42,28]),
     ("Azure DevOps pipeline stuck in queue",                 "Application", [40,30,20,5,5],   [2,10,45,43]),
     # Security
-    ("SSL certificate expired on api-gateway.metlife.kr",   "Security",    [80,10,5,3,2],    [10,30,40,20]),
+    ("SSL certificate expired on api-gateway.example.com",   "Security",    [80,10,5,3,2],    [10,30,40,20]),
     ("Certificate authority root cert expired",              "Security",    [85,8,4,2,1],     [15,35,35,15]),
     ("Azure Key Vault access denied — RBAC misconfiguration","Security",    [70,15,8,4,3],    [8,22,45,25]),
     ("MFA service degraded — Okta outage",                   "Security",    [75,10,8,4,3],    [12,30,40,18]),
@@ -346,7 +346,7 @@ def build():
         role  = random.choice(ROLES_LIST)
         eid   = f"E{i:04d}"
         mgr   = random.choice(mgr_pool) if mgr_pool else None
-        emps.append((eid, f"SYN_User_{i:04d}", f"syn_user_{i:04d}@metlife.com",
+        emps.append((eid, f"SYN_User_{i:04d}", f"syn_user_{i:04d}@ondol.example.com",
                      dept[0], role, random.choice(REGIONS),
                      rdate("2017-01-01", "2024-06-30"), 1, mgr, f"CC-{dept[0]}"))
         if i % 12 == 0:

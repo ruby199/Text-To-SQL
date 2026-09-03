@@ -267,7 +267,7 @@ def samples():
             {"cat":"💰 Cost Analysis", "q":["Show total infra cost by cloud provider","Which assets are right-size candidates?","Average API cost per agent"]},
         ],
         "Architect": [
-            {"cat":"🏗 ARB",           "q":["Draft an ARB document for Azure Service Bus migration","Is Redis Cache approved in MetLife architecture?","Show me all submitted ARB reviews this year"]},
+            {"cat":"🏗 ARB",           "q":["Draft an ARB document for Azure Service Bus migration","Is Redis Cache approved in enterprise architecture?","Show me all submitted ARB reviews this year"]},
             {"cat":"📊 Data",          "q":["Show ARB approval rate by department","Average prep hours for ARB submissions"]},
         ],
         "Security Ops": [

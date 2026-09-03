@@ -14,7 +14,7 @@ DB   = os.path.join(BASE, "data", "ondol.db")
 
 # ── Schema context sent to every agent ───────────────────────
 SCHEMA = """
-MetLife IT Operations Database — table schemas:
+Enterprise IT Operations Database — table schemas:
 
 incidents(incident_id,title,team,priority[P1-P4],status[Open/In-Progress/Resolved/Closed],
   created_at,resolved_at,resolution_hours,assignee_id,dept_id,category)
@@ -122,7 +122,7 @@ def _demo_stub(question: str, agent: str) -> str:
     if agent == "arch_review":
         return json.dumps({
             "summary": "ARB document drafted successfully.",
-            "doc": f"## ARB Submission\n\n**Project:** {question[:60]}\n\n### Business Justification\nThis initiative aligns with MetLife's cloud-first strategy and reduces operational overhead by leveraging managed services.\n\n### Technical Architecture\n- **Platform:** Azure (primary)\n- **Pattern:** Event-driven microservices\n- **Security:** Zero Trust, RBAC via Entra ID\n- **Observability:** Azure Monitor + Application Insights\n\n### Risk Assessment\n| Risk | Likelihood | Impact | Mitigation |\n|------|-----------|--------|------------|\n| Vendor lock-in | Medium | Medium | Use open standards (OpenAPI, OTEL) |\n| Data residency | Low | High | Deploy in KR/SG region only |\n\n### Compliance Checklist\n- [x] MAS TRM alignment confirmed\n- [x] Data classification: Internal\n- [x] DR RTO < 4 hours\n- [x] Pen test scheduled Q2\n\n### Next Steps\n1. Submit to ARB portal\n2. Schedule technical review session\n3. Obtain CISO sign-off",
+            "doc": f"## ARB Submission\n\n**Project:** {question[:60]}\n\n### Business Justification\nThis initiative aligns with an enterprise cloud-first strategy and reduces operational overhead by leveraging managed services.\n\n### Technical Architecture\n- **Platform:** Azure (primary)\n- **Pattern:** Event-driven microservices\n- **Security:** Zero Trust, RBAC via Entra ID\n- **Observability:** Azure Monitor + Application Insights\n\n### Risk Assessment\n| Risk | Likelihood | Impact | Mitigation |\n|------|-----------|--------|------------|\n| Vendor lock-in | Medium | Medium | Use open standards (OpenAPI, OTEL) |\n| Data residency | Low | High | Deploy in KR/SG region only |\n\n### Compliance Checklist\n- [x] MAS TRM alignment confirmed\n- [x] Data classification: Internal\n- [x] DR RTO < 4 hours\n- [x] Pen test scheduled Q2\n\n### Next Steps\n1. Submit to ARB portal\n2. Schedule technical review session\n3. Obtain CISO sign-off",
             "ticket": "ARB-DEMO-2024-001",
             "confidence": "high"
         })
@@ -312,7 +312,7 @@ def _run_agent(system_prompt: str, user_msg: str, agent_name: str,
 # ═══════════════════════════════════════════════════════════════
 def agent_text_to_sql(question: str, session_id: str, user_id: str,
                        role: str, history: list = []) -> dict:
-    system = f"""You are ONDOL's Data Intelligence Agent at MetLife Asia Tech.
+    system = f"""You are ONDOL's Data Intelligence Agent for enterprise IT operations.
 Convert natural language questions into precise SQLite SQL queries.
 
 {SCHEMA}
@@ -369,9 +369,9 @@ Rules:
 # AGENT 2 — Architecture Review (ARB)
 # ═══════════════════════════════════════════════════════════════
 def agent_arch_review(request: str, session_id: str, user_id: str, role: str) -> dict:
-    system = """You are ONDOL's Architecture Review Agent at MetLife Asia Tech.
+    system = """You are ONDOL's Architecture Review Agent for enterprise IT operations.
 You draft ARB (Architecture Review Board) submission documents and check
-compliance with MetLife enterprise standards.
+compliance with enterprise standards.
 
 Return ONLY valid JSON:
 {
@@ -392,7 +392,7 @@ Return ONLY valid JSON:
 # AGENT 3 — Access Request (AD/IAM)
 # ═══════════════════════════════════════════════════════════════
 def agent_access_request(request: str, session_id: str, user_id: str, role: str) -> dict:
-    system = """You are ONDOL's Access Request Agent at MetLife Asia Tech.
+    system = """You are ONDOL's Access Request Agent for enterprise IT operations.
 You process AD group provisioning and SailPoint entitlement requests.
 
 Risk classification:
@@ -422,7 +422,7 @@ Return ONLY valid JSON:
 # AGENT 4 — Infra Ops
 # ═══════════════════════════════════════════════════════════════
 def agent_infra_ops(request: str, session_id: str, user_id: str, role: str) -> dict:
-    system = """You are ONDOL's Infrastructure Operations Agent at MetLife Asia Tech.
+    system = """You are ONDOL's Infrastructure Operations Agent for enterprise IT operations.
 You analyse VM right-sizing, cloud costs, and runbook execution.
 
 Return ONLY valid JSON:
@@ -445,7 +445,7 @@ Return ONLY valid JSON:
 # AGENT 5 — Security Triage
 # ═══════════════════════════════════════════════════════════════
 def agent_security_triage(alert: str, session_id: str, user_id: str, role: str) -> dict:
-    system = """You are ONDOL's Security Triage Agent at MetLife Asia Tech SOC.
+    system = """You are ONDOL's Security Triage Agent for an enterprise IT SOC.
 You classify alerts, recommend SOAR playbooks, and generate Splunk queries.
 
 Return ONLY valid JSON:
