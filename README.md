@@ -9,6 +9,15 @@
 
 [Watch the full video demo on YouTube](https://youtu.be/qUHExHGmuqs)
 
+### Documentation
+
+- [Documentation Home](docs/Home.md)
+- [Architecture](docs/Architecture.md)
+- [Agents and Pipeline](docs/Agents.md)
+- [Security and Compliance](docs/Security.md)
+- [Data and Integration](docs/Data-and-Integration.md)
+- [API and Operations](docs/API-and-Operations.md)
+
 ---
 
 ## Table of Contents
