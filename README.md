@@ -83,6 +83,17 @@ python app.py
 - Set `DEBUG=false` and use a strong, randomly generated `SECRET_KEY` outside local development.
 - If a real API key was ever placed in a local `.env`, revoke and replace it before publishing the repository.
 
+### Data source direction
+
+`data/seed.py` is a disposable synthetic fixture for the local demo and CI. Its
+sample rows and probability weights are deliberately hardcoded so the demo is
+repeatable; they are not production business rules. A production deployment
+should replace this path with a configured data-source adapter:
+
+- Azure SQL or PostgreSQL for operational workloads, using managed identity or environment-based credentials.
+- Databricks SQL Warehouse for analytics workloads, reusing the existing semantic-layer interface.
+- Deployment configuration to select the adapter without changing agent or prompt code.
+
 ### Demo accounts
 
 | Email | Password | Role | What they can do |

@@ -1,5 +1,19 @@
 """
-data/seed.py — ONDOL Rich Synthetic Dataset Generator v3
+data/seed.py — ONDOL demo dataset generator
+
+This module is intentionally limited to local demos and automated tests. The
+lists and probability weights below are synthetic fixtures, not production
+configuration or business policy. Do not use this file to provision a live
+database.
+
+Production data-source direction:
+1. Keep this SQLite seed path for offline demos and CI.
+2. Add a repository adapter for Azure SQL/PostgreSQL and load credentials from
+    environment variables or a managed identity; never place them in this file.
+3. Add a Databricks SQL Warehouse adapter for analytics workloads, reusing the
+    semantic-layer contract instead of copying these fixture tables.
+4. Select the adapter from deployment configuration so agents do not need to
+    know which database is behind the semantic layer.
 
 완전히 현실적인 합성 IT 운영 데이터.
 모든 PII는 합성 (SYN_ 접두사).
@@ -249,6 +263,11 @@ SEV_MTTR_BASE = {"P1": 2.0, "P2": 8.0, "P3": 24.0, "P4": 72.0}
 
 
 def build():
+    """Build the disposable SQLite fixture used by the local demo.
+
+    Production deployments should provision their schema through migrations
+    and connect through a data-source adapter, not call this function.
+    """
     conn = sqlite3.connect(DB)
     c    = conn.cursor()
 
