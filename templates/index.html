@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ONDOL — AI WOW Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--b1:#008EDD;--b2:#0060A2;--b3:#E8F4FD;--b4:#C5E4F8;--wh:#fff;--bg:#F4F8FC;--bg2:#EDF3FB;--dk:#1A2B3C;--gy:#64748B;--lg:#DDE8F2;--bd:#C8DFF0;--gn:#1D9E75;--gnd:#D1FAE5;--gnb:#065F46;--rd:#DC2626;--rdd:#FEE2E2;--am:#D97706;--amd:#FEF3C7;--pu:#7C3AED;--pud:#EDE9FE;--font:'Inter',-apple-system,sans-serif;--mono:'JetBrains Mono',monospace;--r:10px;--rl:16px;--sh:0 2px 14px rgba(0,96,162,.10)}
+html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--dk);font-size:14px;overflow:hidden}
+.view{display:none;width:100%;height:100vh}.view.active{display:flex}
+#vLogin{align-items:center;justify-content:center;background:linear-gradient(140deg,var(--b2) 0%,#004E8A 40%,var(--b1) 100%)}
+.lcard{background:var(--wh);border-radius:20px;padding:30px 34px;width:440px;box-shadow:0 24px 64px rgba(0,50,100,.28)}
+.llogo{display:flex;align-items:center;gap:9px;justify-content:center;margin-bottom:4px}
+.lmark{width:34px;height:34px;background:var(--b2);border-radius:9px;display:flex;align-items:center;justify-content:center}.lmark i{color:#fff;font-size:16px}
+.ltitle{font-size:20px;font-weight:700;color:var(--b2)}
+.lsub{text-align:center;font-size:11px;color:var(--gy);margin-bottom:16px}
+.lf label{font-size:11px;font-weight:600;color:var(--dk);display:block;margin-bottom:4px}
+.lf input{width:100%;background:var(--bg);border:1.5px solid var(--bd);border-radius:var(--r);padding:9px 11px;font-family:var(--font);font-size:13.5px;color:var(--dk);outline:none;transition:border .2s;margin-bottom:10px}
+.lf input:focus{border-color:var(--b1);box-shadow:0 0 0 3px rgba(0,142,221,.1)}
+.lbtn{width:100%;background:var(--b2);border:none;border-radius:var(--r);color:#fff;padding:10px;font-family:var(--font);font-size:13.5px;font-weight:600;cursor:pointer}
+.lbtn:hover{background:var(--b1)}
+.lerr{font-size:11px;color:var(--rd);text-align:center;display:none;margin:5px 0}
+.ddiv{text-align:center;font-size:10px;color:var(--gy);margin:12px 0 8px;letter-spacing:.5px;text-transform:uppercase}
+.rgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px}
+.rpill{background:var(--bg);border:1.5px solid var(--bd);border-radius:8px;padding:7px 6px 6px;cursor:pointer;transition:all .15s;text-align:center}
+.rpill:hover{border-color:var(--b1);background:var(--b3);transform:translateY(-1px)}
+.rice{font-size:17px;margin-bottom:2px}.rname{font-size:10px;font-weight:600;color:var(--b2)}.rmail{font-size:9px;color:var(--gy)}
+#vMain{flex-direction:column}
+.layout{display:grid;grid-template-columns:258px 1fr;flex:1;overflow:hidden}
+.hdr{background:var(--wh);border-bottom:1.5px solid var(--bd);display:flex;align-items:center;padding:0 14px;gap:9px;height:50px;flex-shrink:0;box-shadow:var(--sh);z-index:10}
+.hmark{width:24px;height:24px;background:var(--b2);border-radius:6px;display:flex;align-items:center;justify-content:center}.hmark i{color:#fff;font-size:12px}
+.htitle{font-size:14.5px;font-weight:700;color:var(--b2)}.hdiv{width:1px;height:16px;background:var(--bd)}
+.htab{background:transparent;border:1.5px solid var(--bd);border-radius:7px;color:var(--gy);font-size:11px;font-weight:500;padding:3px 10px;cursor:pointer;font-family:var(--font);transition:all .15s;display:flex;align-items:center;gap:4px}
+.htab:hover,.htab.active{background:var(--b3);border-color:var(--b1);color:var(--b2)}.htab.active{font-weight:600}
+.hright{margin-left:auto;display:flex;align-items:center;gap:7px}
+.rsw{display:flex;align-items:center;gap:5px;background:var(--bg);border:1.5px solid var(--bd);border-radius:20px;padding:3px 10px 3px 5px}
+.rsl{font-size:9.5px;color:var(--gy);font-weight:500}
+.rss{background:transparent;border:none;color:var(--b2);font-family:var(--font);font-size:11px;font-weight:600;cursor:pointer;outline:none}
+.uav{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+.logbtn{background:transparent;border:none;color:var(--gy);cursor:pointer;font-size:11.5px;padding:4px;border-radius:5px}.logbtn:hover{color:var(--rd)}
+.keybanner{display:none;align-items:center;gap:10px;background:#FFF7ED;border-bottom:1.5px solid #FDE68A;padding:7px 16px;font-size:12px;color:#92400E;flex-shrink:0}
+.sb{background:var(--wh);border-right:1.5px solid var(--bd);display:flex;flex-direction:column;overflow:hidden}
+.sbsec{padding:10px 12px;border-bottom:1px solid var(--lg)}.sbsec:last-child{border:none;flex:1;overflow-y:auto}
+.sblbl{font-size:9px;font-weight:700;color:var(--gy);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.kg{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.kpi{background:var(--bg);border:1.5px solid var(--bd);border-radius:7px;padding:6px 8px}
+.kv{font-size:16px;font-weight:700}.kl{font-size:9px;color:var(--gy);margin-top:1px}
+.kpi.r .kv{color:var(--rd)}.kpi.a .kv{color:var(--am)}.kpi.g .kv{color:var(--gn)}.kpi.b .kv{color:var(--b2)}
+.rp{background:var(--b3);border:1.5px solid var(--b4);border-radius:var(--r);padding:8px 10px}
+.rprole{font-size:12px;font-weight:700;color:var(--b2);margin-bottom:3px}.rpdesc{font-size:10px;color:var(--gy);line-height:1.5;margin-bottom:5px}
+.rtags{display:flex;flex-wrap:wrap;gap:3px}
+.rtag{font-size:9px;padding:1px 5px;border-radius:20px;font-weight:500}
+.rtag.ok{background:var(--gnd);color:var(--gnb);border:1px solid #6EE7B7}.rtag.no{background:var(--rdd);color:var(--rd);border:1px solid #FCA5A5;text-decoration:line-through;opacity:.65}
+.agrid{display:flex;flex-direction:column;gap:3px}
+.agl{display:flex;align-items:center;gap:6px;padding:4px 6px;border-radius:6px;font-size:11px;font-weight:500}
+.agl.ok{background:var(--gnd);color:var(--gnb)}.agl.no{background:var(--rdd);color:var(--rd)}
+.agl i{font-size:10.5px;flex-shrink:0}
+.scat{margin-bottom:8px}.sctt{font-size:10px;font-weight:600;color:var(--dk);margin-bottom:3px}
+.sq{font-size:10.5px;color:var(--gy);padding:4px 7px;border-radius:5px;cursor:pointer;transition:all .15s;display:flex;align-items:flex-start;gap:4px;line-height:1.4}
+.sq:hover{background:var(--bg2);color:var(--dk)}.sq::before{content:'>';color:var(--b1);font-weight:700;flex-shrink:0}
+.ncbtn{width:100%;background:var(--b3);border:1.5px solid var(--b1);border-radius:var(--r);color:var(--b2);padding:6px 10px;cursor:pointer;font-family:var(--font);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:5px}
+.ncbtn:hover{background:var(--b4)}
+.mp{display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}
+.page{display:none;flex:1;overflow:hidden;flex-direction:column}.page.active{display:flex}
+.ca{flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:13px}
+.ca::-webkit-scrollbar{width:3px}.ca::-webkit-scrollbar-thumb{background:var(--bd)}
+.wlc{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;text-align:center;padding:28px}
+.wico{width:48px;height:48px;background:var(--b3);border:2px solid var(--b4);border-radius:12px;display:flex;align-items:center;justify-content:center}.wico i{font-size:20px;color:var(--b2)}
+.wlc h2{font-size:17px;font-weight:700;color:var(--b2)}.wlc p{color:var(--gy);font-size:12px;max-width:340px;line-height:1.65}
+.rbadge{display:inline-flex;align-items:center;gap:6px;background:var(--b3);border:1.5px solid var(--b4);border-radius:20px;padding:4px 11px;font-size:10.5px;color:var(--b2);font-weight:500}
+.msg{display:flex;flex-direction:column;gap:6px}.msg-u{align-items:flex-end}.msg-a{align-items:flex-start}
+.bbl{background:var(--b2);color:#fff;border-radius:12px 12px 3px 12px;padding:8px 12px;max-width:60%;font-size:13px;line-height:1.6}
+.aii{display:flex;gap:7px;align-items:flex-start;width:100%}
+.aav{width:24px;height:24px;background:linear-gradient(135deg,var(--b2),#0038AA);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}.aav i{color:#fff;font-size:11px}
+.abdy{flex:1;display:flex;flex-direction:column;gap:5px;min-width:0}
+.blkd{background:var(--rdd);border:1.5px solid #FCA5A5;border-radius:var(--r);padding:10px 12px;display:flex;flex-direction:column;gap:5px}
+.blkd-t{font-size:12px;font-weight:700;color:var(--rd);display:flex;align-items:center;gap:6px}
+.blkd-b{font-size:11.5px;color:#991B1B;line-height:1.6}.blkd-h{font-size:10.5px;color:var(--rd);opacity:.8;font-style:italic}
+.abadge{display:inline-flex;align-items:center;gap:4px;font-size:9.5px;font-weight:700;padding:1px 7px;border-radius:20px}
+.ab-text_to_sql{background:var(--b3);color:var(--b2);border:1px solid var(--b4)}
+.ab-arch_review{background:var(--pud);color:var(--pu);border:1px solid #C4B5FD}
+.ab-access_request{background:var(--amd);color:#92400E;border:1px solid #FDE68A}
+.ab-infra_ops{background:var(--gnd);color:var(--gnb);border:1px solid #6EE7B7}
+.ab-security_triage{background:var(--rdd);color:#991B1B;border:1px solid #FCA5A5}
+.cbadge{font-size:9.5px;font-weight:600;padding:1px 6px;border-radius:20px}
+.ch{background:var(--gnd);color:var(--gn)}.cm{background:var(--amd);color:var(--am)}.cl{background:var(--rdd);color:var(--rd)}
+.sqlb{background:#0d1117;border:1px solid #30363d;border-radius:var(--rl);overflow:hidden}
+.sqlh{display:flex;align-items:center;gap:6px;padding:5px 10px;border-bottom:1px solid #21262d}
+.sqlh span{font-size:10px;font-weight:600;color:#8b949e}
+.sqlcp{margin-left:auto;background:transparent;border:1px solid #30363d;color:#8b949e;font-size:10px;padding:2px 6px;border-radius:4px;cursor:pointer;font-family:var(--font)}.sqlcp:hover{background:#21262d;color:#e6edf3}
+.sqlc{padding:10px 12px;font-family:var(--mono);font-size:11px;line-height:1.9;color:#e6edf3;white-space:pre;overflow-x:auto}
+.kw{color:#79b8ff;font-weight:500}.str{color:#f6c90e}.num{color:#f78166}.cmt{color:#484f58;font-style:italic}
+.resb{background:var(--wh);border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden;box-shadow:var(--sh)}
+.resh{display:flex;align-items:center;justify-content:space-between;padding:6px 10px;border-bottom:1px solid var(--lg)}
+.rest{font-size:11px;font-weight:600;color:var(--dk);display:flex;align-items:center;gap:4px}
+.rbtn{background:transparent;border:1px solid var(--bd);color:var(--gy);font-size:10px;padding:2px 7px;border-radius:5px;cursor:pointer;font-family:var(--font)}
+.rbtn:hover{background:var(--bg)}.rbtn.on{background:var(--b3);color:var(--b2);border-color:var(--b4)}
+.tw{overflow:auto;max-height:190px}
+.rt{width:100%;border-collapse:collapse;font-size:11px}.rt th{position:sticky;top:0;background:var(--bg);color:var(--gy);font-weight:600;padding:5px 8px;border-bottom:1.5px solid var(--bd);white-space:nowrap;text-align:left;font-size:10px}.rt td{padding:4px 8px;border-bottom:1px solid var(--lg);color:var(--dk);white-space:nowrap}.rt tr:last-child td{border-bottom:none}.rt tr:hover td{background:var(--bg2)}.nc{text-align:right;font-family:var(--mono)}
+.chw{padding:9px;display:none}.chw.on{display:block}
+.mdc{background:var(--bg);border:1px solid var(--bd);border-radius:var(--r);padding:10px 12px;font-size:11.5px;line-height:1.7;color:var(--dk)}
+.mdc h2,.mdc h3{color:var(--b2);margin:7px 0 3px;font-size:12px;font-weight:700}
+.mdc table{border-collapse:collapse;width:100%;font-size:10.5px;margin:4px 0}.mdc th{background:var(--b3);padding:3px 6px;border:1px solid var(--b4);font-weight:600;color:var(--b2)}.mdc td{padding:2px 6px;border:1px solid var(--lg)}
+.mdc code{background:var(--b3);padding:0 3px;border-radius:3px;font-family:var(--mono);font-size:10px}
+.mdc pre{background:#0d1117;color:#e6edf3;padding:7px;border-radius:6px;overflow-x:auto;font-family:var(--mono);font-size:10.5px;margin:4px 0}
+.mdc ul{margin-left:13px}.mdc li{margin:2px 0}
+.ins{background:var(--gnd);border:1px solid #6EE7B7;border-radius:6px;padding:6px 10px;font-size:11px;color:var(--gnb)}
+.ins i{color:var(--gn);margin-right:4px}
+.actl{display:flex;flex-direction:column;gap:3px}
+.acti{display:flex;align-items:flex-start;gap:6px;font-size:11px;color:var(--dk);padding:2px 0}
+.acti::before{content:'>';color:var(--b1);font-weight:700;flex-shrink:0}
+.fbr{display:flex;align-items:center;gap:4px}
+.fbb{background:transparent;border:1px solid var(--bd);color:var(--gy);font-size:10px;padding:2px 7px;border-radius:5px;cursor:pointer;font-family:var(--font)}
+.fbb.pos:hover{border-color:var(--gn);color:var(--gn)}.fbb.neg:hover{border-color:var(--rd);color:var(--rd)}
+.el{font-size:9.5px;color:var(--gy);margin-left:auto;display:flex;align-items:center;gap:5px}
+.typ{display:flex;align-items:center;gap:6px}
+.typ span{font-size:10.5px;color:var(--gy)}
+.dots span{display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--b1);animation:db 1.2s infinite;margin:0 1px}
+.dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
+@keyframes db{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+.ia{padding:10px 14px;background:var(--wh);border-top:1.5px solid var(--bd)}
+.ib{background:var(--bg);border:1.5px solid var(--bd);border-radius:var(--rl);display:flex;align-items:flex-end;gap:7px;padding:7px 10px;transition:border .2s}
+.ib:focus-within{border-color:var(--b1);box-shadow:0 0 0 3px rgba(0,142,221,.09)}
+#qi{flex:1;resize:none;font-family:var(--font);font-size:13px;background:transparent;border:none;color:var(--dk);outline:none;max-height:84px;min-height:20px;line-height:1.6}
+#qi::placeholder{color:var(--gy)}
+.sb2{width:28px;height:28px;border-radius:7px;background:var(--b2);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sb2:hover{background:var(--b1)}.sb2:disabled{background:var(--bd);cursor:not-allowed}
+.ih{font-size:9.5px;color:var(--gy);margin-top:4px;text-align:center}
+.think-block{border:1px solid var(--bd);border-radius:var(--r);margin-bottom:4px;overflow:hidden;background:var(--wh)}
+.think-hdr{display:flex;align-items:center;gap:7px;padding:6px 11px;cursor:pointer;background:var(--bg);font-size:11px;font-weight:600;color:var(--b2);user-select:none;border-bottom:1px solid transparent}
+.think-hdr.open{border-bottom-color:var(--lg)}
+.think-hdr:hover{background:var(--bg2)}
+.think-body{display:none;padding:7px 11px;font-family:var(--mono);font-size:11px;color:var(--dk);line-height:1.7;white-space:pre-wrap;background:var(--bg);border-top:1px solid var(--lg)}
+.think-body.show{display:block}
+.think-cursor{display:inline-block;width:6px;height:11px;background:var(--b1);animation:blink .7s step-end infinite;vertical-align:middle;margin-left:3px}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.pb-mini{background:var(--b3);color:var(--b2);border:1px solid var(--b4);font-size:9px;padding:1px 6px;border-radius:20px;font-weight:600}
+.pb-4o{background:#E8F8F5;color:#0F6E56;border:1px solid #1D9E75;font-size:9px;padding:1px 6px;border-radius:20px;font-weight:600}
+.pb-retry{background:var(--amd);color:#92400E;border:1px solid #FDE68A;font-size:9px;padding:1px 6px;border-radius:20px;font-weight:600}
+.pc{flex:1;overflow-y:auto;padding:16px 20px}
+.sc{background:var(--wh);border:1.5px solid var(--bd);border-radius:var(--rl);overflow:hidden;margin-bottom:12px;box-shadow:var(--sh)}
+.sch{display:flex;align-items:center;justify-content:space-between;padding:8px 13px;border-bottom:1px solid var(--lg);background:var(--bg)}
+.sct{font-size:12px;font-weight:600;color:var(--b2);display:flex;align-items:center;gap:5px}
+.csg{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px}
+.cs{background:var(--wh);border:1.5px solid var(--bd);border-radius:var(--r);padding:8px 10px;box-shadow:var(--sh)}
+.csv{font-size:18px;font-weight:700;color:var(--b2)}.csl{font-size:9.5px;color:var(--gy);margin-top:2px}
+.gt{width:100%;border-collapse:collapse;font-size:11px}
+.gt th{background:var(--bg);color:var(--gy);font-weight:600;padding:5px 8px;border-bottom:1.5px solid var(--bd);text-align:left;white-space:nowrap;font-size:10px}
+.gt td{padding:4px 8px;border-bottom:1px solid var(--lg);color:var(--dk);white-space:nowrap}
+.gt tr:last-child td{border-bottom:none}.gt tr:hover td{background:var(--bg2)}
+.mn{font-family:var(--mono);font-size:10px}
+.bdg{font-size:9.5px;padding:1px 5px;border-radius:20px;font-weight:600}
+.b-bl{background:var(--b3);color:var(--b2);border:1px solid var(--b4)}.b-gn{background:var(--gnd);color:var(--gnb)}.b-rd{background:var(--rdd);color:var(--rd)}.b-gy{background:var(--lg);color:var(--gy)}
+</style>
+</head>
+<body>
+
+<div class="view active" id="vLogin">
+  <div class="lcard">
+    <div class="llogo"><div class="lmark"><i class="fas fa-shield-halved"></i></div><span class="ltitle">ONDOL</span></div>
+    <div class="lsub">MetLife AI WOW — IT Platform Demo</div>
+    <div class="lf">
+      <label>Email</label><input type="email" id="le" placeholder="user@ondol.demo">
+      <label>Password</label><input type="password" id="lp" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="lerr" id="lerr"></div>
+    <button class="lbtn" onclick="doLogin()"><i class="fas fa-arrow-right-to-bracket"></i> Sign In</button>
+    <div class="ddiv">— One-click demo roles —</div>
+    <div class="rgrid" id="rgrid"></div>
+  </div>
+</div>
+
+<div class="view" id="vMain">
+  <div class="hdr">
+    <div style="display:flex;align-items:center;gap:7px"><div class="hmark"><i class="fas fa-shield-halved"></i></div><span class="htitle">ONDOL</span></div>
+    <div class="hdiv"></div>
+    <button class="htab active" id="tab-chat" onclick="pg('chat')"><i class="fas fa-comments"></i> Chat</button>
+    <button class="htab" id="tab-bi" onclick="pg('bi')"><i class="fas fa-chart-pie"></i> BI</button>
+    <button class="htab" id="tab-cost" style="display:none" onclick="pg('cost')"><i class="fas fa-dollar-sign"></i> AI Cost</button>
+    <button class="htab" id="tab-audit" style="display:none" onclick="pg('audit')"><i class="fas fa-list-check"></i> Audit</button>
+    <div class="hright">
+      <div class="rsw"><div class="uav" id="uav"></div><span class="rsl">Role:</span><select class="rss" id="rss" onchange="swRole(this.value)"></select></div>
+      <button class="logbtn" onclick="doLogout()" title="Sign out"><i class="fas fa-right-from-bracket"></i></button>
+    </div>
+  </div>
+  <div class="keybanner" id="keybanner">
+    <i class="fas fa-key"></i><strong>OPENAI_API_KEY not set.</strong> Edit .env and restart.
+    <code style="background:#FEF3C7;padding:2px 7px;border-radius:4px;font-family:var(--mono);font-size:11px">OPENAI_API_KEY=sk-...</code>
+    <button onclick="document.getElementById('keybanner').style.display='none'" style="margin-left:auto;background:transparent;border:none;cursor:pointer;color:#92400E;font-size:13px">x</button>
+  </div>
+
+  <div class="layout">
+    <aside class="sb">
+      <div class="sbsec"><button class="ncbtn" onclick="newChat()"><i class="fas fa-plus"></i> New Chat</button></div>
+      <div class="sbsec">
+        <div class="sblbl">Live IT KPIs</div>
+        <div class="kg">
+          <div class="kpi r"><div class="kv" id="kp1">-</div><div class="kl">P1 Open</div></div>
+          <div class="kpi a"><div class="kv" id="kpac">-</div><div class="kl">Access Queue</div></div>
+          <div class="kpi a"><div class="kv" id="kpal">-</div><div class="kl">Open Alerts</div></div>
+          <div class="kpi g"><div class="kv" id="kprs">-</div><div class="kl">Right-Size VMs</div></div>
+        </div>
+      </div>
+      <div class="sbsec">
+        <div class="sblbl">My Permissions</div>
+        <div class="rp" id="rpanel">Loading...</div>
+      </div>
+      <div class="sbsec">
+        <div class="sblbl">Available Agents</div>
+        <div class="agrid" id="agrid"></div>
+      </div>
+      <div class="sbsec">
+        <div class="sblbl">Try These Questions</div>
+        <div id="slist"></div>
+      </div>
+    </aside>
+
+    <div class="mp">
+      <div class="page active" id="page-chat">
+        <div class="ca" id="ca">
+          <div class="wlc" id="wlc">
+            <div class="wico"><i class="fas fa-wand-magic-sparkles"></i></div>
+            <h2>Ask your IT data anything</h2>
+            <p>5 specialist AI agents · Text-to-SQL · RBAC enforced · All queries logged</p>
+            <div class="rbadge" id="rbadge"><i class="fas fa-lock" style="font-size:10px"></i><span id="rbtext">-</span></div>
+          </div>
+        </div>
+        <div class="ia">
+          <div class="ib">
+            <textarea id="qi" rows="1" placeholder="Ask anything — try the suggested questions on the left"></textarea>
+            <button class="sb2" id="sbtn" onclick="sendQ()"><i class="fas fa-arrow-up"></i></button>
+          </div>
+          <div class="ih">Enter to send · Shift+Enter for newline · RBAC filtered · PII masked · Logged (IFS-KR)</div>
+        </div>
+      </div>
+
+      <div class="page" id="page-bi">
+        <div class="pc" style="background:var(--bg)">
+          <div class="csg" id="bi-kpi"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div class="sc"><div class="sch"><div class="sct"><i class="fas fa-fire-flame-curved" style="color:var(--rd)"></i> Incidents by Priority (12mo)</div></div><div style="padding:12px"><canvas id="bi-inc" height="160"></canvas></div></div>
+            <div class="sc"><div class="sch"><div class="sct"><i class="fas fa-shield-halved" style="color:var(--am)"></i> Security MTTD by Severity</div></div><div style="padding:12px"><canvas id="bi-mttd" height="160"></canvas></div></div>
+            <div class="sc"><div class="sch"><div class="sct"><i class="fas fa-cloud" style="color:var(--b2)"></i> Infra Cost by Cloud</div></div><div style="padding:12px"><canvas id="bi-infra" height="160"></canvas></div></div>
+            <div class="sc"><div class="sch"><div class="sct"><i class="fas fa-microchip" style="color:var(--pu)"></i> VM Utilisation</div></div><div style="padding:12px"><canvas id="bi-util" height="160"></canvas></div></div>
+          </div>
+          <div class="sc"><div class="sch"><div class="sct"><i class="fas fa-chart-line" style="color:var(--gn)"></i> KPI Weekly Trend</div></div><div style="padding:12px"><canvas id="bi-kpi-trend" height="110"></canvas></div></div>
+          <div class="sc"><div class="sch"><div class="sct"><i class="fas fa-crosshairs" style="color:var(--rd)"></i> Top MITRE ATT&amp;CK Techniques</div></div><div style="padding:0"><div class="tw" style="max-height:200px"><table class="gt" id="bi-mitre"></table></div></div></div>
+        </div>
+      </div>
+
+      <div class="page" id="page-cost">
+        <div class="pc">
+          <div class="csg" id="cost-kpi" style="grid-template-columns:repeat(4,1fr)"></div>
+          <div class="sc"><div class="sch"><div class="sct"><i class="fas fa-microchip"></i> Cost by Model and Agent</div></div><div style="padding:0"><div class="tw"><table class="gt" id="ctm"></table></div></div></div>
+          <div class="sc"><div class="sch"><div class="sct"><i class="fas fa-clock-rotate-left"></i> Recent API Calls</div></div><div style="padding:0"><div class="tw"><table class="gt" id="ctr"></table></div></div></div>
+        </div>
+      </div>
+
+      <div class="page" id="page-audit">
+        <div class="pc">
+          <div class="sc"><div class="sch"><div class="sct"><i class="fas fa-file-shield"></i> Audit Log (IFS-KR)</div><button class="rbtn" onclick="loadAudit()">Refresh</button></div><div style="padding:0"><div class="tw" style="max-height:250px"><table class="gt" id="ata"></table></div></div></div>
+          <div class="sc"><div class="sch"><div class="sct"><i class="fas fa-comments"></i> Conversation Log (PII-stripped, 1yr)</div></div><div style="padding:0"><div class="tw" style="max-height:250px"><table class="gt" id="atc"></table></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var RC={
+  "IT Admin":      {c:"#0060A2",ic:"crown",ag:["text_to_sql","arch_review","access_request","infra_ops","security_triage"]},
+  "Architect":     {c:"#7C3AED",ic:"building",ag:["text_to_sql","arch_review"]},
+  "Security Ops":  {c:"#DC2626",ic:"shield-halved",ag:["text_to_sql","access_request","security_triage"]},
+  "Infra Engineer":{c:"#1D9E75",ic:"gear",ag:["text_to_sql","infra_ops"]},
+  "Data Analyst":  {c:"#D97706",ic:"chart-bar",ag:["text_to_sql"]},
+  "IT Staff":      {c:"#64748B",ic:"user",ag:["text_to_sql"]}
+};
+var AC={
+  text_to_sql:    {l:"Data / Text-to-SQL",   i:"fa-chart-bar"},
+  arch_review:    {l:"Arch Review (ARB)",    i:"fa-building"},
+  access_request: {l:"Access Request",       i:"fa-lock"},
+  infra_ops:      {l:"Infra Ops",            i:"fa-gear"},
+  security_triage:{l:"Security Triage",      i:"fa-shield-halved"}
+};
+var AA=Object.keys(AC);
+var CR={
+  "IT Admin":      ["admin@ondol.demo","admin1"],
+  "Architect":     ["arch@ondol.demo","arch1"],
+  "Security Ops":  ["sec@ondol.demo","sec1"],
+  "Infra Engineer":["infra@ondol.demo","infra1"],
+  "Data Analyst":  ["data@ondol.demo","data1"],
+  "IT Staff":      ["staff@ondol.demo","staff1"]
+};
+var SM={
+  "IT Admin":[
+    {cat:"📊 KPI Dashboards",q:[
+      "Show the full incident dashboard by priority",
+      "Show security MTTD and MTTR by severity and source",
+      "Show infra cost dashboard with right-sizing candidates",
+      "Show ARB pipeline with approval rates by technology",
+      "Show change log success rates by change type"
+    ]},
+    {cat:"🔍 Data Queries",q:[
+      "How many open P1 and P2 incidents per team this month?",
+      "Which departments have the highest SLA breach rate for access requests?",
+      "Show JIT access grants by risk level",
+      "What are the top MITRE ATT&CK techniques in our alerts?",
+      "Show cost forecast vs actual by department for the last 6 months"
+    ]},
+    {cat:"🤖 All Agents",q:[
+      "Which Azure VMs are right-sizing candidates and what would we save?",
+      "Draft ARB for migrating to Azure Service Bus with Terraform IaC",
+      "Provision read access to Snowflake-DataAnalyst for E0042",
+      "Triage this security alert: 450 failed logins from 10.0.0.5 in 5 minutes, pattern matches T1110"
+    ]}
+  ],
+  "Architect":[
+    {cat:"✅ Allowed",q:[
+      "Show ARB approval rate by technology — which techs get approved most?",
+      "How many Confidential data classification ARBs were submitted this year?",
+      "Show average prep hours and estimated cost by technology",
+      "Draft ARB for Databricks migration with data classification Confidential",
+      "Which ARBs are still in Draft status — show with technology and department"
+    ]},
+    {cat:"🚫 Try These (Blocked)",q:[
+      "Which Azure VMs are right-sizing candidates?",
+      "Triage this security alert: 450 failed logins from 10.0.0.5",
+      "Provision admin access to ServiceNow for E0088"
+    ]}
+  ],
+  "Security Ops":[
+    {cat:"✅ Allowed",q:[
+      "Triage this security alert: 450 failed logins from 10.0.0.5 in 5 minutes",
+      "Show P1 security alerts — MTTD by source, which source is slowest?",
+      "What is our false positive rate by source and severity?",
+      "Show all high-risk access requests pending approval",
+      "Which MITRE ATT&CK techniques appear most in our P1 and P2 alerts?"
+    ]},
+    {cat:"🚫 Try These (Blocked)",q:[
+      "Which Azure VMs are right-sizing candidates?",
+      "Draft ARB for Azure API Management upgrade",
+      "Show cost forecast vs actual by department"
+    ]}
+  ],
+  "Infra Engineer":[
+    {cat:"✅ Allowed",q:[
+      "Which Azure VMs are right-sizing candidates and what is the total potential saving?",
+      "Show monthly cost by cloud and asset type with utilisation",
+      "Which assets have not been patched since before 2024-11-01?",
+      "Show all failed or rolled-back changes in the last 90 days",
+      "How many critical assets are running on AWS vs Azure vs On-Prem?"
+    ]},
+    {cat:"🚫 Try These (Blocked)",q:[
+      "Draft ARB for Kubernetes 1.29 upgrade",
+      "Provision admin access to ServiceNow for E0042",
+      "Triage this security alert: 450 failed logins from 10.0.0.5"
+    ]}
+  ],
+  "Data Analyst":[
+    {cat:"✅ Allowed",q:[
+      "Show incident volume and resolution rate by category and environment",
+      "Access request SLA breach rate by department and risk level",
+      "What is the weekly KPI trend for MTTD and SLA breach rate over 2024?",
+      "Show ARB approval rates — which technologies have lowest approval?",
+      "Compare infra cost forecast vs actual by department for each resource type"
+    ]},
+    {cat:"🚫 Try These (Blocked)",q:[
+      "Which Azure VMs are right-sizing candidates?",
+      "Provision read access to Prod-DB for E0042",
+      "Draft ARB for Azure Service Bus migration"
+    ]}
+  ],
+  "IT Staff":[
+    {cat:"✅ Allowed",q:[
+      "How many open P1 incidents are there right now?",
+      "Show all incidents in the Application category this week",
+      "What is the resolution rate for P2 incidents?",
+      "Which ARBs are in Submitted status waiting for approval?",
+      "Show incidents by environment — how many are in Production vs Staging?"
+    ]},
+    {cat:"🚫 Try These (Blocked)",q:[
+      "Show monthly infra cost breakdown by cloud",
+      "Triage this security alert: 450 failed logins from 10.0.0.5",
+      "Provision admin access to ServiceNow"
+    ]}
+  ]
+};
+
+var user=null,perms=null,loading=false,keyOk=false,_biCharts={},_es=null;
+
+document.addEventListener('DOMContentLoaded',function(){
+  buildRGrid();
+  fetch('/api/health').then(function(r){return r.json();}).then(function(d){keyOk=d.openai_key_set;}).catch(function(){keyOk=false;});
+  var qi=document.getElementById('qi');
+  qi.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendQ();}});
+  qi.addEventListener('input',function(e){e.target.style.height='auto';e.target.style.height=Math.min(e.target.scrollHeight,84)+'px';});
+});
+
+function buildRGrid(){
+  var icons={"IT Admin":"👑","Architect":"🏗","Security Ops":"🛡","Infra Engineer":"⚙","Data Analyst":"📊","IT Staff":"👤"};
+  document.getElementById('rgrid').innerHTML=Object.keys(CR).map(function(r){
+    return '<div class="rpill" onclick="qL(\''+CR[r][0]+'\',\''+CR[r][1]+'\')"><div class="rice">'+icons[r]+'</div><div class="rname">'+r+'</div><div class="rmail">'+CR[r][0].split('@')[0]+'</div></div>';
+  }).join('');
+}
+
+function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function mk(t,c){var el=document.createElement(t);el.className=c;return el;}
+function ca(){return document.getElementById('ca');}
+function sc(){var a=ca();a.scrollTop=a.scrollHeight;}
+function rm(id){var el=document.getElementById(id);if(el)el.remove();}
+
+async function doLogin(){
+  var e=document.getElementById('le').value.trim(),p=document.getElementById('lp').value,err=document.getElementById('lerr');
+  err.style.display='none';
+  try{
+    var r=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:e,password:p})});
+    var d=await r.json();
+    if(!r.ok){err.textContent=d.error||'Invalid credentials';err.style.display='block';return;}
+    user=d.user;perms=d.role_info;initMain();
+  }catch(ex){err.textContent='Connection error';err.style.display='block';}
+}
+async function qL(e,p){document.getElementById('le').value=e;document.getElementById('lp').value=p;await doLogin();}
+async function swRole(r){var ep=CR[r];await fetch('/api/logout',{method:'POST'});newChat();await qL(ep[0],ep[1]);}
+async function doLogout(){await fetch('/api/logout',{method:'POST'});user=null;perms=null;sv('Login');}
+
+function initMain(){
+  sv('Main');
+  var sel=document.getElementById('rss');
+  sel.innerHTML=Object.keys(CR).map(function(r){return '<option value="'+r+'" '+(r===user.role?'selected':'')+'>'+r+'</option>';}).join('');
+  var av=document.getElementById('uav');
+  av.textContent={"IT Admin":"👑","Architect":"🏗","Security Ops":"🛡","Infra Engineer":"⚙","Data Analyst":"📊","IT Staff":"👤"}[user.role]||user.name[0];
+  av.style.background=RC[user.role]?RC[user.role].c:'#374151';av.style.fontSize='12px';
+  if(perms.can_view_costs)document.getElementById('tab-cost').style.display='flex';
+  if(perms.can_manage)document.getElementById('tab-audit').style.display='flex';
+  refSb();loadStats();
+  document.getElementById('keybanner').style.display=keyOk?'none':'flex';
+}
+
+function refSb(){
+  if(!user)return;
+  var role=user.role,cfg=RC[role]||{ag:["text_to_sql"],c:"#374151"};
+  var AT=["incidents","access_requests","arb_reviews","infra_assets","security_alerts","employees","departments","change_log","cost_forecast","kpi_snapshots"];
+  var allowedT=perms.can_manage||role==='IT Admin'?AT:
+    role==='Architect'?["arb_reviews","incidents","infra_assets","departments"]:
+    role==='Security Ops'?["security_alerts","incidents","access_requests","employees"]:
+    role==='Infra Engineer'?["infra_assets","incidents","departments","change_log"]:
+    ["incidents","security_alerts","access_requests","arb_reviews","infra_assets","departments"];
+  document.getElementById('rpanel').innerHTML=
+    '<div class="rprole" style="color:'+cfg.c+'">'+role+'</div>'+
+    '<div class="rpdesc">'+(perms.description||'')+'</div>'+
+    '<div class="sblbl" style="margin-bottom:4px">Table Access</div>'+
+    '<div class="rtags">'+AT.map(function(t){
+      var ok=allowedT.includes(t)||role==='IT Admin';
+      return '<span class="rtag '+(ok?'ok':'no')+'">'+t+'</span>';
+    }).join('')+'</div>';
+  document.getElementById('agrid').innerHTML=AA.map(function(a){
+    var ok=cfg.ag.includes(a);
+    return '<div class="agl '+(ok?'ok':'no')+'"><i class="fas '+AC[a].i+'"></i><span>'+AC[a].l+'</span><i class="fas '+(ok?'fa-check':'fa-xmark')+'" style="margin-left:auto;font-size:9px"></i></div>';
+  }).join('');
+  var sm=SM[role]||SM["IT Staff"];
+  document.getElementById('slist').innerHTML=sm.map(function(cat){
+    return '<div class="scat"><div class="sctt">'+cat.cat+'</div>'+
+      cat.q.map(function(q){return '<div class="sq" onclick="useQ(this.getAttribute(\'data-q\'))" data-q="'+esc(q)+'">'+esc(q)+'</div>';}).join('')+'</div>';
+  }).join('');
+  var rb=document.getElementById('rbadge'),rbt=document.getElementById('rbtext');
+  rbt.textContent=role+' — '+(perms.description||'');
+  rb.style.borderColor=cfg.c;rb.style.color=cfg.c;rb.style.background=cfg.c+'18';
+}
+
+function useQ(q){document.getElementById('qi').value=q;document.getElementById('qi').focus();}
+
+async function loadStats(){
+  try{
+    var d=await(await fetch('/api/stats')).json();
+    document.getElementById('kp1').textContent=d.p1_open||0;
+    document.getElementById('kpac').textContent=d.pending_access||0;
+    document.getElementById('kpal').textContent=d.open_alerts||0;
+    document.getElementById('kprs').textContent=d.right_size_count||0;
+  }catch(e){}
+}
+
+async function sendQ(){
+  if(loading)return;
+  var qi=document.getElementById('qi'),q=qi.value.trim();if(!q)return;
+  document.getElementById('wlc').style.display='none';
+  loading=true;document.getElementById('sbtn').disabled=true;
+  qi.value='';qi.style.height='auto';
+  aU(q);
+  if(_es){_es.close();_es=null;}
+  var t0=Date.now(),finalResult=null,thinkCount=0;
+  var thinkEl=aThinkContainer();
+  var thinkSteps=thinkEl.querySelector('.think-steps');
+  var url='/api/ask/stream?q='+encodeURIComponent(q);
+  var es=new EventSource(url);_es=es;
+  es.onmessage=function(ev){
+    var msg=JSON.parse(ev.data);
+    if(msg.type==='pipeline_start'){
+      addThinkStep(thinkSteps,'🚀','Pipeline started','Allowed agents: '+(msg.data.allowed_agents||[]).join(', '),'',thinkCount++);
+    } else if(msg.type==='thinking'){
+      var s=msg.data,meta=(s.tokens?s.tokens+' tok':'')+(s.tokens&&s.cost_usd>0?' · ':'')+(s.cost_usd>0?'$'+s.cost_usd.toFixed(5):'');
+      addThinkStep(thinkSteps,s.emoji||'💭',s.label,s.detail||'',meta,thinkCount++);
+    } else if(msg.type==='rbac_block'){
+      addThinkStep(thinkSteps,'🚫','RBAC blocked','Role cannot use '+msg.data.agent,'',thinkCount++);
+    } else if(msg.type==='retry_upgrade'){
+      addThinkStep(thinkSteps,'🔄','Upgrading to GPT-4o for retry',(msg.data.reason||[]).join(', '),'',thinkCount++);
+    } else if(msg.type==='error'){
+      es.close();_es=null;loading=false;document.getElementById('sbtn').disabled=false;
+      if(msg.data.api_key_missing){aApiErr(msg.data.message);}else{aErr(msg.data.message);}
+      thinkEl.remove();return;
+    } else if(msg.type==='result'){
+      finalResult=msg.data;
+    } else if(msg.type==='pipeline_done'){
+      var elapsed=((Date.now()-t0)/1000).toFixed(2);
+      es.close();_es=null;loading=false;document.getElementById('sbtn').disabled=false;
+      var sumEl=thinkEl.querySelector('.think-summary');
+      if(sumEl)sumEl.textContent=thinkCount+' steps · $'+((msg.data.total_cost||0).toFixed(4))+' · '+elapsed+'s';
+      var cursor=thinkEl.querySelector('.think-cursor');if(cursor)cursor.remove();
+      if(finalResult){
+        if(finalResult.error&&finalResult.error.indexOf('role')+1){aBlk(finalResult);thinkEl.remove();}
+        else{aAI(finalResult,elapsed,thinkEl);}
+      }
+    } else if(msg.type==='done'&&!finalResult){
+      es.close();_es=null;loading=false;document.getElementById('sbtn').disabled=false;
+    }
+  };
+  es.onerror=function(){
+    es.close();_es=null;loading=false;document.getElementById('sbtn').disabled=false;
+    if(!finalResult)aErr('Connection lost - check server is running.');
+  };
+}
+
+function aU(t){var el=mk('div','msg msg-u');el.innerHTML='<div class="bbl">'+esc(t)+'</div>';ca().appendChild(el);sc();}
+
+function aThinkContainer(){
+  var el=mk('div','msg msg-a');
+  el.innerHTML='<div class="aii"><div class="aav" style="background:linear-gradient(135deg,var(--b2),#7C3AED)"><i class="fas fa-brain" style="font-size:11px"></i></div><div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:8px;font-size:11.5px;font-weight:600;color:var(--b2);margin-bottom:3px"><span>Agent pipeline thinking</span><span class="think-cursor"></span><span class="think-summary" style="font-size:10px;color:var(--gy);font-weight:400;margin-left:auto"></span></div><div class="think-steps" style="display:flex;flex-direction:column;gap:3px"></div></div></div>';
+  ca().appendChild(el);sc();return el;
+}
+
+function addThinkStep(container,emoji,label,detail,meta,idx){
+  var stepEl=document.createElement('div');stepEl.className='think-block';
+  var isOpen=idx===0||label.includes('Plan')||label.includes('score')||label.includes('Schema');
+  var shortDetail=(detail||'').slice(0,300);
+  stepEl.innerHTML='<div class="think-hdr '+(isOpen?'open':'')+'" onclick="toggleThink(this)">'+
+    '<span style="font-size:13px;margin-right:2px">'+emoji+'</span>'+
+    '<span style="flex:1">'+esc(label)+'</span>'+
+    (meta?'<span style="font-size:10px;color:var(--gy)">'+esc(meta)+'</span>':'')+
+    '<i class="fas fa-chevron-'+(isOpen?'up':'down')+'" style="font-size:9px;color:var(--gy);margin-left:4px"></i></div>'+
+    '<div class="think-body '+(isOpen?'show':'')+'">'+(shortDetail?esc(shortDetail):'')+'</div>';
+  container.appendChild(stepEl);sc();
+}
+
+function toggleThink(hdr){
+  hdr.classList.toggle('open');
+  var body=hdr.nextElementSibling;body.classList.toggle('show');
+  var icon=hdr.querySelector('.fa-chevron-up,.fa-chevron-down');
+  if(icon){icon.className='fas fa-chevron-'+(body.classList.contains('show')?'up':'down');icon.style.fontSize='9px';icon.style.color='var(--gy)';icon.style.marginLeft='4px';}
+}
+
+function aBlk(d){
+  var el=mk('div','msg msg-a');var role=user?user.role:'';var cfg=RC[role]||{};
+  var agent=(d.agent||'').replace(/_/g,' ');
+  el.innerHTML='<div class="aii"><div class="aav" style="background:var(--rd)"><i class="fas fa-ban"></i></div>'+
+    '<div class="abdy"><div class="blkd"><div class="blkd-t"><i class="fas fa-shield-halved"></i> Access Denied - RBAC Gate</div>'+
+    '<div class="blkd-b">Your role <strong>'+esc(role)+'</strong> does not have access to the <strong>'+esc(agent)+'</strong> agent.<br>Blocked before reaching AI - no data exposed.</div>'+
+    '<div class="blkd-h">Switch to IT Admin or a role with '+esc(agent)+' access.</div></div>'+
+    '<div style="display:flex;gap:4px;flex-wrap:wrap">'+
+    (cfg.ag||[]).map(function(a){return '<span class="bdg b-gn"><i class="fas '+AC[a].i+'"></i> '+AC[a].l+'</span>';}).join('')+
+    '</div></div></div>';
+  ca().appendChild(el);sc();
+}
+
+function aAI(d,elapsed,thinkEl){
+  var el=mk('div','msg msg-a');var mid='m-'+Date.now();el.id=mid;
+  var ag=d.agent||'text_to_sql',res=d.result||{},pip=d.pipeline||{};
+  var conf=res.confidence||'medium';
+  var AL={'text_to_sql':'Data / SQL','arch_review':'Arch Review','access_request':'Access Req','infra_ops':'Infra Ops','security_triage':'Security Triage'};
+  var AI={'text_to_sql':'fa-chart-bar','arch_review':'fa-building','access_request':'fa-lock','infra_ops':'fa-gear','security_triage':'fa-shield-halved'};
+  var body='';
+  if(ag==='text_to_sql'){
+    var sql=res.sql||'',qr=res.query_result||{},rh='';
+    if(qr.error){rh='<div style="color:var(--rd);font-size:11px;padding:3px"><i class="fas fa-triangle-exclamation"></i> '+esc(qr.error)+'</div>';}
+    else if(qr.data&&qr.data.length){
+      var tId='t-'+Date.now(),cId='c-'+Date.now();
+      rh='<div class="resb"><div class="resh"><div class="rest"><i class="fas fa-table" style="font-size:10px"></i> '+qr.row_count+' rows</div>'+
+         '<div style="display:flex;gap:3px"><button class="rbtn" onclick="tChart(\''+tId+'\',\''+cId+'\',this)">📊</button><button class="rbtn" onclick="dlCSV(\''+tId+'\')">↓</button></div></div>'+
+         '<div class="tw">'+mTbl(qr.columns,qr.data,tId)+'</div>'+
+         '<div class="chw" id="'+cId+'"><canvas id="cv-'+cId+'" height="140"></canvas></div></div>';
+      window['cd-'+cId]={columns:qr.columns,data:qr.data};
+    }else if(qr.data){rh='<div style="font-size:11px;color:var(--gy);padding:3px">No rows.</div>';}
+    body=(sql?'<div class="sqlb"><div class="sqlh"><i class="fas fa-code" style="color:#8b949e;font-size:10px"></i><span>SQL</span><button class="sqlcp" onclick="cpSql(this,\''+mid+'\')"><i class="fas fa-copy"></i></button></div><div class="sqlc" id="sc-'+mid+'">'+hlite(sql)+'</div></div>':'')+
+         (res.explanation?'<div style="font-size:12px;color:var(--dk);line-height:1.7">'+esc(res.explanation)+'</div>':'')+rh+
+         (res.insight?'<div class="ins"><i class="fas fa-lightbulb"></i>'+esc(res.insight)+'</div>':'');
+  } else if(ag==='arch_review'){
+    body=(res.doc?'<div class="mdc">'+md2h(res.doc)+'</div>':'')+
+         (res.ticket?'<div class="ins"><i class="fas fa-ticket"></i> <strong>'+esc(res.ticket)+'</strong></div>':'');
+  } else if(ag==='access_request'){
+    var rc={'Low':'b-gn','Medium':'b-gy','High':'b-rd'}[res.risk_level]||'b-gy';
+    body='<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:5px">'+
+         (res.risk_level?'<span class="bdg '+rc+'">Risk: '+res.risk_level+'</span>':'')+
+         (res.decision?'<span class="bdg b-bl">'+esc(res.decision)+'</span>':'')+
+         (res.ticket?'<span class="bdg b-gn"><i class="fas fa-ticket"></i> '+esc(res.ticket)+'</span>':'')+
+         '</div>'+(res.rationale?'<div style="font-size:12px;color:var(--dk);line-height:1.7">'+esc(res.rationale)+'</div>':'');
+  } else if(ag==='infra_ops'){
+    body=(res.summary?'<div style="font-size:12.5px;font-weight:600;color:var(--b2);margin-bottom:4px">'+esc(res.summary)+'</div>':'')+
+         ((res.findings||[]).length?'<div class="actl">'+res.findings.map(function(f){return '<div class="acti">'+esc(f)+'</div>';}).join('')+'</div>':'')+
+         (res.ticket?'<div class="ins" style="margin-top:4px"><i class="fas fa-ticket"></i> '+esc(res.ticket)+'</div>':'');
+  } else if(ag==='security_triage'){
+    body='<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:5px">'+
+         (res.classification?'<span class="bdg b-rd">'+esc(res.classification)+'</span>':'')+
+         (res.playbook?'<span class="bdg b-gy"><i class="fas fa-book"></i> '+esc(res.playbook)+'</span>':'')+
+         (res.ticket?'<span class="bdg b-gn"><i class="fas fa-ticket"></i> '+esc(res.ticket)+'</span>':'')+
+         '</div>'+(res.rationale?'<div style="font-size:12px;color:var(--dk);line-height:1.7;margin-bottom:4px">'+esc(res.rationale)+'</div>':'')+
+         ((res.immediate_actions||[]).length?'<div class="actl">'+res.immediate_actions.map(function(a,i){return '<div class="acti"><strong>'+(i+1)+'.</strong> '+esc(typeof a==='object'?a.action||JSON.stringify(a):a)+'</div>';}).join('')+'</div>':'');
+  }
+  var evalScore=pip.eval_score||0;
+  var evalColor=evalScore>=80?'var(--gn)':evalScore>=60?'var(--am)':'var(--rd)';
+  var modelBadge=res.model_used?(res.model_used.includes('mini')?'<span class="pb-mini">mini</span>':'<span class="pb-4o">GPT-4o</span>'):'';
+  var retryBadge=pip.retried?'<span class="pb-retry">retried</span>':'';
+  var costCard=renderCostCard(d.cost_card);
+  var cl='<span class="el">'+modelBadge+retryBadge+'<span style="color:'+evalColor+';font-weight:600;font-size:10px">★'+evalScore+'</span><span>$'+((pip.total_cost_usd||0).toFixed(4))+' · '+elapsed+'s</span></span>';
+  el.innerHTML='<div class="aii"><div class="aav"><i class="fas '+(AI[ag]||'fa-wand-magic-sparkles')+'"></i></div>'+
+    '<div class="abdy"><div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">'+
+    '<span class="abadge ab-'+ag+'">'+(AL[ag]||ag)+'</span>'+
+    '<span class="cbadge '+(conf==='high'?'ch':conf==='medium'?'cm':'cl')+'">'+conf+'</span></div>'+
+    body+costCard+
+    '<div class="fbr"><button class="fbb pos" onclick="fb(this,\'pos\')"><i class="fas fa-thumbs-up"></i> OK</button>'+
+    '<button class="fbb neg" onclick="fb(this,\'neg\')"><i class="fas fa-thumbs-down"></i> Wrong</button>'+cl+'</div>'+
+    '</div></div>';
+  if(thinkEl){ca().removeChild(thinkEl);ca().insertBefore(thinkEl,el);}
+  ca().appendChild(el);sc();
+}
+
+function renderCostCard(cc){
+  if(!cc||!user||user.role!=='IT Admin') return '';
+  var total=cc.total_cost_usd||0,tok=cc.total_tokens||0;
+  var steps=(cc.agent_breakdown||[]).filter(function(s){return s.cost_usd>0;});
+  var maxC=steps.reduce(function(m,s){return Math.max(m,s.cost_usd);},0.000001);
+  var bars=steps.map(function(s){
+    return '<div style="display:flex;align-items:center;gap:7px;margin:2px 0">'+
+      '<span style="font-size:10px;width:155px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--gy)">'+(s.emoji||'')+' '+esc(s.label)+'</span>'+
+      '<div style="flex:1;height:5px;background:var(--lg);border-radius:2px;overflow:hidden"><div style="width:'+Math.round(s.cost_usd/maxC*100)+'%;height:100%;background:var(--b2);border-radius:2px"></div></div>'+
+      '<span style="font-size:10px;font-family:var(--mono);color:var(--b2);min-width:72px;text-align:right">$'+s.cost_usd.toFixed(6)+'</span></div>';
+  }).join('');
+  return '<div style="background:var(--b3);border:1.5px solid var(--b4);border-radius:var(--r);padding:9px 12px;margin-top:6px">'+
+    '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">'+
+    '<i class="fas fa-dollar-sign" style="color:var(--b2);font-size:11px"></i>'+
+    '<span style="font-size:11.5px;font-weight:700;color:var(--b2)">Cost Breakdown (IT Admin)</span>'+
+    (cc.retried?'<span class="pb-retry">retried</span>':'')+
+    '<span style="margin-left:auto;font-family:var(--mono);font-size:13px;font-weight:700;color:var(--b2)">$'+total.toFixed(5)+'</span></div>'+
+    bars+
+    '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:7px;padding-top:7px;border-top:1px solid var(--b4);font-size:10px;color:var(--gy)">'+
+    '<span><strong style="color:var(--dk)">'+tok.toLocaleString()+'</strong> tokens</span>'+
+    '<span><strong style="color:var(--dk)">'+cc.elapsed_s+'s</strong></span>'+
+    '<span>GPT-4o: <strong>$2.50/$10.00</strong>/1M</span>'+
+    '<span>mini: <strong>$0.15/$0.60</strong>/1M</span></div></div>';
+}
+
+function mTbl(cols,data,tid){
+  var num=new Set(cols.filter(function(c){return data.length&&typeof data[0][c]==='number';}));
+  return '<table class="rt" id="'+tid+'"><thead><tr>'+cols.map(function(c){return '<th>'+esc(c)+'</th>';}).join('')+'</tr></thead><tbody>'+
+    data.slice(0,200).map(function(r){return '<tr>'+cols.map(function(c){var v=r[c];var n=num.has(c);var dv=typeof v==='number'?v.toLocaleString():v===null?'-':v;return '<td class="'+(n?'nc':'')+'" >'+esc(String(dv))+'</td>';}).join('')+'</tr>';}).join('')+'</tbody></table>';
+}
+
+var _chartInst=null;
+function tChart(tid,cid,btn){
+  var w=document.getElementById(cid),on=w.classList.toggle('on');btn.classList.toggle('on',on);
+  if(!on)return;
+  var cd=window['cd-'+cid];if(!cd)return;
+  var lc=cd.columns[0],vc=cd.columns.find(function(c){return cd.data.length&&typeof cd.data[0][c]==='number';});
+  if(!vc)return;
+  if(_chartInst)_chartInst.destroy();
+  _chartInst=new Chart(document.getElementById('cv-'+cid).getContext('2d'),{type:'bar',data:{labels:cd.data.map(function(r){return String(r[lc]);}).slice(0,20),datasets:[{label:vc,data:cd.data.map(function(r){return r[vc]||0;}).slice(0,20),backgroundColor:'rgba(0,142,221,.65)',borderColor:'#008EDD',borderWidth:1,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#64748b',font:{size:9}}},y:{ticks:{color:'#64748b',font:{size:9}}}}}});
+}
+
+function hlite(sql){
+  var kws=['SELECT','FROM','WHERE','JOIN','LEFT JOIN','RIGHT JOIN','ON','GROUP BY','ORDER BY','HAVING','LIMIT','AS','AND','OR','NOT','IN','BETWEEN','LIKE','IS NULL','DISTINCT','WITH','UNION','CASE','WHEN','THEN','ELSE','END','ASC','DESC','ROUND','COUNT','SUM','AVG','MAX','MIN','COALESCE','IFNULL','STRFTIME'];
+  var out=sql.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  out=out.replace(new RegExp('\\b('+kws.join('|')+')\\b','gi'),function(m){return '<span class="kw">'+m.toUpperCase()+'</span>';});
+  out=out.replace(/'[^']*'/g,function(m){return '<span class="str">'+m+'</span>';});
+  out=out.replace(/\b(\d+(\.\d+)?)\b(?![^<]*>)/g,function(m){return '<span class="num">'+m+'</span>';});
+  return out;
+}
+
+function md2h(md){
+  return md.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/^#{1,2} (.+)$/gm,'<h2>$1</h2>').replace(/^### (.+)$/gm,'<h3>$1</h3>')
+    .replace(/^- (.+)$/gm,'<li>$1</li>').replace(/(<li>.*<\/li>)+/gs,function(m){return '<ul>'+m+'</ul>';})
+    .replace(/`([^`]+)`/g,'<code>$1</code>')
+    .replace(/\[x\]/g,'<span style="color:var(--gn)">V</span>')
+    .replace(/\n\n/g,'<br>').replace(/\n/g,'<br>');
+}
+
+function cpSql(btn,mid){
+  var code=document.getElementById('sc-'+mid);
+  if(!code)return;
+  navigator.clipboard.writeText(code.innerText).then(function(){btn.innerHTML='<i class="fas fa-check"></i>';setTimeout(function(){btn.innerHTML='<i class="fas fa-copy"></i>';},1500);});
+}
+
+function dlCSV(tid){
+  var t=document.getElementById(tid);if(!t)return;
+  var rows=Array.from(t.querySelectorAll('tr')).map(function(r){return Array.from(r.querySelectorAll('th,td')).map(function(c){return '"'+c.innerText+'"';}).join(',');});
+  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+rows.join('\n')],{type:'text/csv'}));a.download='ondol.csv';a.click();
+}
+
+function pg(p){
+  ['chat','bi','cost','audit'].forEach(function(x){
+    var pe=document.getElementById('page-'+x),te=document.getElementById('tab-'+x);
+    if(pe)pe.classList.toggle('active',x===p);
+    if(te)te.classList.toggle('active',x===p);
+  });
+  if(p==='cost')loadCost();
+  if(p==='audit')loadAudit();
+  if(p==='bi')loadBI();
+}
+
+function newChat(){
+  var role=user?user.role:'',cfg=RC[role]||{c:'var(--b1)'};
+  document.getElementById('ca').innerHTML='<div class="wlc" id="wlc"><div class="wico"><i class="fas fa-wand-magic-sparkles"></i></div><h2>Ask your IT data anything</h2><p>5 specialist AI agents · Text-to-SQL · RBAC enforced · All queries logged</p><div class="rbadge" id="rbadge" style="color:'+cfg.c+';border-color:'+cfg.c+';background:'+cfg.c+'18"><i class="fas fa-lock" style="font-size:10px"></i><span id="rbtext">'+role+' — '+(perms?perms.description:'')+'</span></div></div>';
+}
+
+function aErr(msg){var el=mk('div','msg msg-a');el.innerHTML='<div style="background:var(--rdd);border:1px solid #FCA5A5;border-radius:var(--r);padding:7px 10px;font-size:11.5px;color:var(--rd);display:flex;gap:5px"><i class="fas fa-triangle-exclamation"></i>'+esc(msg)+'</div>';ca().appendChild(el);sc();}
+
+function aApiErr(msg){
+  var el=mk('div','msg msg-a');
+  var errText=msg?esc(msg):'API key not configured';
+  el.innerHTML='<div class="aii"><div class="aav" style="background:var(--am)"><i class="fas fa-key"></i></div>'+
+    '<div class="abdy"><div style="background:#FFF7ED;border:1.5px solid #FDE68A;border-radius:var(--r);padding:10px 12px;display:flex;flex-direction:column;gap:5px">'+
+    '<div style="font-size:12px;font-weight:700;color:#92400E"><i class="fas fa-key"></i> OpenAI API Key Required</div>'+
+    '<div style="font-size:11.5px;color:#92400E;line-height:1.6">'+errText+'</div>'+
+    '<div style="font-family:var(--mono);font-size:11px;background:#FEF3C7;padding:5px 8px;border-radius:5px;color:#78350F">OPENAI_API_KEY=sk-... in .env → restart</div>'+
+    '</div></div></div>';
+  ca().appendChild(el);sc();
+}
+
+function fb(btn,t){btn.style.background=t==='pos'?'var(--gnd)':'var(--rdd)';btn.style.color=t==='pos'?'var(--gn)':'var(--rd)';}
+
+async function loadCost(){
+  try{
+    var d=await(await fetch('/api/bi/costs')).json(),t=d.totals||{};
+    document.getElementById('cost-kpi').innerHTML=
+      [{v:t.calls||0,l:'Total API Calls'},{v:'$'+((t.total||0).toFixed(4)),l:'Total Cost USD'},{v:'$'+((t.calls?(t.total||0)/t.calls:0).toFixed(5)),l:'Avg/Call'},{v:(t.tokens||0).toLocaleString(),l:'Total Tokens'}]
+      .map(function(s){return '<div class="cs"><div class="csv">'+s.v+'</div><div class="csl">'+s.l+'</div></div>';}).join('');
+    var mk2=function(cols,rows){return '<thead><tr>'+cols.map(function(h){return '<th>'+h+'</th>';}).join('')+'</tr></thead><tbody>'+rows+'</tbody>';};
+    document.getElementById('ctm').innerHTML=mk2(['Model','Agent','Calls','Input Tok','Output Tok','Total Cost'],
+      (d.by_model||[]).map(function(r){return '<tr><td><span class="bdg '+(r.model.includes('mini')?'b-bl':'b-rd')+'">'+r.model+'</span></td><td>'+r.agent+'</td><td class="mn">'+r.calls+'</td><td class="mn">'+((r.total_in||0).toLocaleString())+'</td><td class="mn">'+((r.total_out||0).toLocaleString())+'</td><td class="mn"><strong>$'+((r.total_cost||0).toFixed(5))+'</strong></td></tr>';}).join(''));
+    document.getElementById('ctr').innerHTML=mk2(['Model','Agent','In','Out','Cost','Time'],
+      (d.by_day||[]).slice(0,20).map(function(r){return '<tr><td class="mn">'+r.day+'</td><td class="mn">'+r.calls+'</td><td class="mn">—</td><td class="mn">—</td><td class="mn">$'+((r.total_cost||0).toFixed(5))+'</td><td class="mn">—</td></tr>';}).join(''));
+  }catch(e){}
+}
+
+async function loadAudit(){
+  try{
+    var d=await(await fetch('/api/audit')).json();
+    var AC2={'LOGIN':'b-gn','LOGOUT':'b-gy','QUERY':'b-bl','BLOCKED':'b-rd','ACCESS_DENIED':'b-rd','PIPELINE':'b-bl'};
+    document.getElementById('ata').innerHTML='<thead><tr><th>Action</th><th>User</th><th>Role</th><th>Detail</th><th>Time</th></tr></thead><tbody>'+
+      (d.audit_log||[]).map(function(r){return '<tr><td><span class="bdg '+(AC2[r.action]||'b-gy')+'">'+r.action+'</span></td><td class="mn">'+esc(r.user_id)+'</td><td>'+esc(r.user_role)+'</td><td style="max-width:220px;overflow:hidden;text-overflow:ellipsis">'+esc(r.detail||'')+'</td><td class="mn">'+((r.created_at||'').slice(11,19))+'</td></tr>';}).join('')+'</tbody>';
+    document.getElementById('atc').innerHTML='<thead><tr><th>Turn</th><th>Speaker</th><th>Agent</th><th>Content</th><th>Until</th></tr></thead><tbody>'+
+      (d.conversation_log||[]).map(function(r){return '<tr><td class="mn">'+r.turn+'</td><td><span class="bdg b-bl">'+r.role+'</span></td><td>'+esc(r.agent||'')+'</td><td style="max-width:240px;overflow:hidden;text-overflow:ellipsis">'+esc((r.content||'').slice(0,75))+'</td><td class="mn">'+((r.retained_until||'').slice(0,10))+'</td></tr>';}).join('')+'</tbody>';
+  }catch(e){}
+}
+
+var _biInst={};
+function destroyBI(){Object.values(_biInst).forEach(function(c){try{c.destroy();}catch(e){}});_biInst={};}
+async function loadBI(){
+  destroyBI();
+  try{
+    var d=await(await fetch('/api/bi/overview')).json();
+    document.getElementById('bi-kpi').innerHTML=
+      [{v:d.open_p1,l:'P1 Open',c:'var(--rd)'},{v:d.open_alerts,l:'Open Alerts',c:'var(--am)'},{v:d.avg_mttd_min,l:'Avg MTTD (min)',c:'var(--b2)'},{v:d.right_size_count,l:'Right-Size VMs',c:'var(--gn)'},{v:'$'+Math.round((d.total_monthly_cost||0)/1000)+'K',l:'Monthly Infra',c:'var(--b2)'}]
+      .map(function(s){return '<div class="cs"><div class="csv" style="color:'+s.c+'">'+(s.v||0)+'</div><div class="csl">'+s.l+'</div></div>';}).join('');
+  }catch(e){}
+  try{
+    var d=await(await fetch('/api/bi/incidents')).json();
+    var months=[...new Set(d.trend.map(function(r){return r.month;}))].sort();
+    var prios=['P1','P2','P3','P4'];
+    var clrs={'P1':'rgba(220,38,38,.75)','P2':'rgba(217,119,6,.75)','P3':'rgba(0,142,221,.6)','P4':'rgba(100,116,139,.5)'};
+    _biInst.inc=new Chart(document.getElementById('bi-inc').getContext('2d'),{type:'bar',
+      data:{labels:months,datasets:prios.map(function(p){return {label:p,backgroundColor:clrs[p],borderRadius:3,data:months.map(function(m){return (d.trend.find(function(r){return r.month===m&&r.priority===p;})||{cnt:0}).cnt;})};})},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:9},boxWidth:9}}},scales:{x:{stacked:true,ticks:{font:{size:8},color:'#64748b'}},y:{stacked:true,ticks:{font:{size:8},color:'#64748b'}}}}});
+  }catch(e){}
+  try{
+    var d=await(await fetch('/api/bi/security')).json();
+    var sevs=[...new Set(d.mttd_by_source.map(function(r){return r.severity;}))];
+    var srcs=[...new Set(d.mttd_by_source.map(function(r){return r.source;}))];
+    var sC={'P1':'#DC2626','P2':'#D97706','P3':'#008EDD','P4':'#64748B'};
+    _biInst.mttd=new Chart(document.getElementById('bi-mttd').getContext('2d'),{type:'bar',
+      data:{labels:srcs,datasets:sevs.map(function(s){return {label:s,backgroundColor:sC[s]+'BB',borderRadius:3,data:srcs.map(function(src){return (d.mttd_by_source.find(function(r){return r.severity===s&&r.source===src;})||{avg_mttd:0}).avg_mttd;})};})},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:9},boxWidth:9}}},scales:{x:{ticks:{font:{size:8},color:'#64748b'}},y:{ticks:{font:{size:8},color:'#64748b'}}}}});
+    var mt=document.getElementById('bi-mitre');
+    mt.innerHTML='<thead><tr><th>MITRE Technique</th><th>Category</th><th>Alerts</th><th>Avg MTTD</th></tr></thead><tbody>'+
+      (d.mitre_top10||[]).map(function(r){return '<tr><td class="mn" style="font-size:10px">'+esc(r.mitre_technique)+'</td><td>'+esc(r.category)+'</td><td class="mn">'+r.cnt+'</td><td class="mn">'+r.avg_mttd+'</td></tr>';}).join('')+'</tbody>';
+  }catch(e){}
+  try{
+    var d=await(await fetch('/api/bi/infra')).json();
+    var pal=['rgba(0,96,162,.7)','rgba(0,142,221,.65)','rgba(124,58,237,.6)','rgba(29,158,117,.6)','rgba(217,119,6,.6)','rgba(220,38,38,.55)','rgba(100,116,139,.5)','rgba(0,60,110,.6)'];
+    var lbs=d.cost_by_cloud.map(function(r){return r.cloud+'/'+r.type;});
+    _biInst.infra=new Chart(document.getElementById('bi-infra').getContext('2d'),{type:'doughnut',
+      data:{labels:lbs,datasets:[{data:d.cost_by_cloud.map(function(r){return r.monthly_cost_usd;}),backgroundColor:pal.slice(0,lbs.length),borderWidth:1}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:9},boxWidth:9}}}}});
+    var uL=d.utilisation.map(function(r){return r.bucket;});
+    _biInst.util=new Chart(document.getElementById('bi-util').getContext('2d'),{type:'pie',
+      data:{labels:uL,datasets:[{data:d.utilisation.map(function(r){return r.cnt;}),backgroundColor:['rgba(220,38,38,.7)','rgba(29,158,117,.7)','rgba(217,119,6,.7)','rgba(220,38,38,.85)'],borderWidth:1}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:9},boxWidth:9}}}}});
+  }catch(e){}
+  try{
+    var d=await(await fetch('/api/bi/kpi_trend')).json();
+    var rows=(d.trend||[]).filter(function(_,i){return i%4===0;});
+    _biInst.kpi=new Chart(document.getElementById('bi-kpi-trend').getContext('2d'),{type:'line',
+      data:{labels:rows.map(function(r){return r.snapshot_date.slice(0,7);}),datasets:[
+        {label:'Open P1',data:rows.map(function(r){return r.open_p1_incidents;}),borderColor:'#DC2626',tension:.35,pointRadius:0,fill:false},
+        {label:'MTTD/10',data:rows.map(function(r){return +(r.avg_mttd_minutes/10).toFixed(1);}),borderColor:'#D97706',tension:.35,pointRadius:0,fill:false},
+        {label:'SLA Breach%',data:rows.map(function(r){return r.sla_breach_rate_pct;}),borderColor:'#008EDD',tension:.35,pointRadius:0,fill:false},
+        {label:'ARB Approval%',data:rows.map(function(r){return r.arb_approval_rate_pct;}),borderColor:'#1D9E75',tension:.35,pointRadius:0,fill:false}
+      ]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:9},boxWidth:9}}},scales:{x:{ticks:{font:{size:8},color:'#64748b',maxTicksLimit:12}},y:{ticks:{font:{size:8},color:'#64748b'}}}}});
+  }catch(e){}
+}
+
+function sv(v){document.querySelectorAll('.view').forEach(function(e){e.classList.remove('active');});document.getElementById('v'+v).classList.add('active');}
+</script>
+</body>
+</html>

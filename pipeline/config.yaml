@@ -1,0 +1,231 @@
+# ═══════════════════════════════════════════════════════════════
+# ONDOL Pipeline Configuration v3
+# ═══════════════════════════════════════════════════════════════
+# This YAML is the single source of truth for the entire agentic pipeline.
+# Equivalent to LangGraph's graph definition + LangChain agent configs.
+# Hot-reload supported: edit this file → restart server.
+
+pipeline:
+  name: ondol
+  version: "3.0.0"
+  description: "MetLife AI-First IT Ways of Working — multi-agent platform"
+  streaming: true          # SSE streaming of thinking steps
+  checkpointing: true      # save state per session_id (SQLite)
+  max_retries: 1           # max evaluator-triggered retries
+  eval_pass_threshold: 70  # score >= this → pass without retry
+
+# ── Model assignments ──────────────────────────────────────────
+models:
+  # Only supervisor uses GPT-4o (complex planning + merging)
+  supervisor:   gpt-4o
+  # All specialist agents + evaluator + router use mini (cost-efficient)
+  specialist:   gpt-4o-mini
+  evaluator:    gpt-4o-mini
+  router:       gpt-4o-mini
+  # On evaluator retry (<threshold), upgrade to this model
+  retry_upgrade: gpt-4o
+
+# ── Agent definitions ──────────────────────────────────────────
+agents:
+
+  supervisor:
+    model: supervisor
+    max_tokens: 800
+    temperature: 0.0
+    prompt_file: prompts/supervisor.md
+    description: >
+      GPT-4o orchestrator. Reads user question + RBAC context,
+      builds a step-by-step execution plan, detects multi-step needs,
+      and merges results at the end.
+    thinking_label: "Supervisor planning"
+    thinking_emoji: "🧠"
+
+  schema_discovery:
+    model: specialist
+    max_tokens: 600
+    temperature: 0.0
+    prompt_file: prompts/schema_discovery.md
+    description: >
+      Genie-style DB introspection. Scans real table structures,
+      samples actual values from enum columns, builds a data profile
+      focused on the user's question. No hallucinated column names.
+    thinking_label: "Exploring database schema"
+    thinking_emoji: "🔍"
+    cache_ttl: 3600        # schema doesn't change mid-session
+    trigger_on: [text_to_sql, infra_ops]   # only run for data agents
+
+  text_to_sql:
+    model: specialist
+    max_tokens: 1200
+    temperature: 0.1
+    prompt_file: prompts/text_to_sql.md
+    description: >
+      Converts natural language to SQLite SQL using semantic layer
+      enrichment (metric registry, glossary, join paths). Validates
+      SQL before execution. Retries once with error feedback.
+    thinking_label: "Generating SQL query"
+    thinking_emoji: "📊"
+    tools:
+      - execute_sql
+      - validate_sql
+    max_sql_retries: 2
+    result_cache_ttl: 300  # 5 min cache for identical queries
+
+  arch_review:
+    model: specialist
+    max_tokens: 2000
+    temperature: 0.2
+    prompt_file: prompts/arch_review.md
+    description: >
+      Drafts full ARB/RFC documents with MetLife-approved patterns,
+      risk assessment tables, compliance checklists, and next steps.
+      Creates ServiceNow ARB ticket reference.
+    thinking_label: "Drafting ARB document"
+    thinking_emoji: "🏗"
+    tools:
+      - create_servicenow_ticket
+
+  access_request:
+    model: specialist
+    max_tokens: 1000
+    temperature: 0.0
+    prompt_file: prompts/access_request.md
+    description: >
+      Processes AD group provisioning and SailPoint entitlement requests.
+      Classifies risk (Low/Medium/High), applies auto-approve policy,
+      specifies JIT access conditions.
+    thinking_label: "Processing access request"
+    thinking_emoji: "🔐"
+    tools:
+      - create_servicenow_ticket
+      - lookup_ad_groups
+
+  infra_ops:
+    model: specialist
+    max_tokens: 1500
+    temperature: 0.1
+    prompt_file: prompts/infra_ops.md
+    description: >
+      VM right-sizing, cloud cost optimisation, runbook generation,
+      and DR planning. Queries live infra data, calculates savings,
+      produces ordered runbooks with rollback steps.
+    thinking_label: "Analysing infrastructure"
+    thinking_emoji: "⚙"
+    tools:
+      - execute_sql
+      - create_servicenow_ticket
+
+  security_triage:
+    model: specialist
+    max_tokens: 1500
+    temperature: 0.0
+    prompt_file: prompts/security_triage.md
+    description: >
+      P1-P4 classification, MITRE ATT&CK mapping, SOAR playbook
+      selection, Splunk SPL generation, IOC extraction, and
+      stakeholder communication draft for P1/P2 alerts.
+    thinking_label: "Triaging security alert"
+    thinking_emoji: "🛡"
+    tools:
+      - create_servicenow_ticket
+
+  evaluator:
+    model: evaluator
+    max_tokens: 512
+    temperature: 0.0
+    prompt_file: prompts/evaluator.md
+    description: >
+      Independent quality gate. Scores every agent output on
+      sql_correctness, completeness, hallucination, and safety.
+      Triggers retry with upgraded model if score < threshold.
+    thinking_label: "Evaluating output quality"
+    thinking_emoji: "✅"
+    dimensions:
+      sql_correctness: { weight: 0.35, description: "SQL answers the question correctly" }
+      completeness:    { weight: 0.30, description: "All requested information present" }
+      hallucination:   { weight: 0.25, description: "No invented facts/columns/tables" }
+      safety:          { weight: 0.10, description: "No PII exposure, no policy violations" }
+
+# ── Graph edges (LangGraph StateGraph equivalent) ─────────────
+graph:
+  start: supervisor
+
+  edges:
+    supervisor:
+      routes_to: [text_to_sql, arch_review, access_request, infra_ops, security_triage]
+      decision: "based on execution plan built by supervisor"
+
+    schema_discovery:
+      routes_to: [text_to_sql, infra_ops]
+      always_before: text_to_sql   # injected between supervisor and text_to_sql
+
+    text_to_sql:
+      routes_to: evaluator
+
+    arch_review:
+      routes_to: evaluator
+
+    access_request:
+      routes_to: evaluator
+
+    infra_ops:
+      routes_to: evaluator
+
+    security_triage:
+      routes_to: evaluator
+
+    evaluator:
+      pass: output           # score >= eval_pass_threshold
+      retry: specialist      # score < threshold → retry with upgraded model
+      max_retries: 1
+
+    output:
+      routes_to: END
+
+# ── RBAC (which roles can invoke which agents) ─────────────────
+rbac:
+  text_to_sql:
+    - IT Admin
+    - Architect
+    - Security Ops
+    - Infra Engineer
+    - Data Analyst
+    - IT Staff
+  arch_review:
+    - IT Admin
+    - Architect
+  access_request:
+    - IT Admin
+    - Security Ops
+  infra_ops:
+    - IT Admin
+    - Infra Engineer
+  security_triage:
+    - IT Admin
+    - Security Ops
+
+# ── Compliance (IFS-KR + MetLife policy) ──────────────────────
+compliance:
+  conversation_retention_days: 365
+  pii_masking: true
+  content_filter_input: true
+  content_filter_output: true
+  synthetic_data_only: true
+  audit_log: true
+  sql_read_only: true        # DML blocked at all times
+  max_query_rows: 200
+
+# ── Streaming thinking steps ───────────────────────────────────
+streaming:
+  enabled: true
+  transport: sse             # Server-Sent Events
+  endpoint: /api/ask/stream
+  emit_events:
+    - supervisor_plan
+    - schema_discovery
+    - agent_start
+    - agent_thinking
+    - agent_result
+    - evaluator_score
+    - retry_upgrade
+    - pipeline_done
